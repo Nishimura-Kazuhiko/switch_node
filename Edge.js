@@ -14,7 +14,17 @@ class Edge
         // <-  reverse
         // <-> both
         // --  undirected
-        this.direction  = direction; 
+        this.direction  = direction;
+        
+        //state type
+        // off
+        // on
+        // undef
+        this.state = 'off';
+        
+        this.connectChecked = false;
+        
+        //if(_debug_state.includes('connect_check')){this.state = 'on';this.connectChecked = true;} 
     }
     
     setConfig()
@@ -69,6 +79,25 @@ class Edge
         noFill();
         stroke(sc0);
         strokeWeight(this.strokeWeight);
+        
+        // for debug
+        if(_debug_state.includes('connect_check')){
+            switch(this.state){
+            case 'undef':
+                stroke(127);
+                break;
+            case 'on':
+                stroke(255,0,0);
+                break;
+            case 'off':
+                stroke(0);
+                break;
+            }
+            if(this.connectChecked){
+                strokeWeight(10);
+            }
+        }
+        
         line(this.node0.cx,this.node0.cy,this.node1.cx,this.node1.cy);
     }
 }
