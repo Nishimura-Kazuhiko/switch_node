@@ -4,10 +4,18 @@ let drawFunc;
 
 
 // for debug
-let _debug_state;
-// _debug_state = 'draw_test';
+let _debug_state; // check list
+
+// _debug_state.push('draw_test');
 // _debug_test_graph00()
+
+// _debug_state.push('draw_test');
+// _debug_state.push('graph_move');
 // _debug_test_graph_move00()
+
+// _debug_state.push('draw_test');
+// _debug_state.push('connect_check');
+// _debug_connect_check00()
 let _graph;
 
 function setup() 
@@ -18,14 +26,18 @@ function setup()
     createCanvas(1024, 768);
     background(255);
     
-    _debug_state = 'draw_test';
+    _debug_state = [];
+    _debug_state.push('draw_test');
+    //_debug_state.push('graph_move');
+    _debug_state.push('connect_check');
     _debug_test_graph00();
+    _debug_connect_check00();
 }
 
 
 function draw()
 {
-    //_debug_test_graph_move00();
+    _debug_test_graph_move00();
 }
 
 
@@ -33,13 +45,13 @@ function draw()
 // make node and edge, and draw them
 function _debug_test_graph00()
 {
-    if(_debug_state == 'draw_test'){
+    if(_debug_state.includes('draw_test')){
         _graph = new Graph();
         
         let nodeIndex = 0;
         let edgeIndex = 0;
-        let xiMax = 4;
-        let yiMax = 7;
+        let xiMax = 2;
+        let yiMax = 2;
         let maxIndex = xiMax*yiMax-1;
         
         for (let yi=0; yi<yiMax; yi++) {
@@ -56,7 +68,11 @@ function _debug_test_graph00()
                 }else if((yi%2)+(xi%2)!=1){
                     _graph.addNodeByParam(nodeName,x,y,'switch');
                 }else{
-                    _graph.addNodeByParam(nodeName,x,y,'segment');
+                    if(_debug_state.includes('connect_check')){
+                        _graph.addNodeByParam(nodeName,x,y,'switch');
+                    }else{
+                        _graph.addNodeByParam(nodeName,x,y,'segment');
+                    }
                 }
                 nodeIndex++;
             }
@@ -88,7 +104,9 @@ function _debug_test_graph00()
             }
         }
         
-        _graph.drawGraph();
+        if(!_debug_state.includes('connect_check')){
+            _graph.drawGraph();
+        }
     }
 }
 
@@ -96,7 +114,7 @@ function _debug_test_graph00()
 // jitter function
 function _debug_test_graph_move00()
 {
-    if(_debug_state == 'draw_test'){
+    if(_debug_state.includes('graph_move')){
         background(255);
         
         for(let node0 of _graph.nodeArray){
@@ -104,5 +122,14 @@ function _debug_test_graph_move00()
             node0.setY(node0.y+random(-2,2));
         }
         _graph.drawGraph();
+    }
+}
+
+function _debug_connect_check00()
+{
+    if(_debug_state.includes('connect_check')){
+         _graph.nodeArray[1].isSelected = true;
+         _graph.connectCheck();
+         _graph.drawGraph();
     }
 }

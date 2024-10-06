@@ -4,6 +4,8 @@ class Node
     {  
         this.setConfig();
         
+        this.connectEdgeIndices = [];
+        
         this.name = name;
         this.nodeType = nodeType;
         this.x = x;
@@ -23,6 +25,10 @@ class Node
         if(this.nodeType == 'source_in'){
             this.isSelected = true;
         }
+        
+        this.connectChecked = false;
+        
+        //if(_debug_state.includes('connect_check')){this.connectChecked = true;} 
     }
 
     setConfig()
@@ -46,6 +52,12 @@ class Node
         this.selectFontColor = config.node_selectFontColor;
         this.selectFillColor = config.node_selectFillColor;
         this.strokeColor     = config.node_strokeColor;
+    }
+
+    connectEdge(index){
+        if (!this.connectEdgeIndices.includes(index)) {
+            this.connectEdgeIndices.push(index);
+        }
     }
 
     setNodeSize()
@@ -163,6 +175,11 @@ class Node
         case 'segment':
             fill(sc0);
             noStroke();
+            
+            if(_debug_state.includes('connect_check')){
+                if(this.connectChecked){stroke(sc0);strokeWeight(10);}
+            }
+            
             ellipse(this.cx,this.cy,this.w,this.h);
             break;
             
@@ -170,6 +187,11 @@ class Node
             fill(fic0);
             stroke(sc0);
             strokeWeight(this.strokeWeight);
+            
+            if(_debug_state.includes('connect_check')){
+                if(this.connectChecked){strokeWeight(10);}
+            }
+            
             rect(this.x, this.y, this.w, this.h);
             
             fill(foc0);
@@ -183,6 +205,11 @@ class Node
             fill(fic0);
             stroke(sc0);
             strokeWeight(this.strokeWeight);
+            
+            if(_debug_state.includes('connect_check')){
+                if(this.connectChecked){strokeWeight(10);}
+            }
+            
             rect(this.x, this.y, this.w, this.h);
             
             fill(foc0);
@@ -197,6 +224,9 @@ class Node
             fill(fic0);
             stroke(sc0);
             strokeWeight(this.strokeWeight);
+            if(_debug_state.includes('connect_check')){
+                if(this.connectChecked){strokeWeight(10);}
+            }
             drawFunc.lameRect(this.x, this.y, this.w, this.h);
             
             //stroke(foc0);
