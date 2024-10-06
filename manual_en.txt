@@ -1,0 +1,185 @@
+2024/10/06
+
+##switch_node.js description and usage
+
+This manual also includes explanations of the technical parts inside the program
+Technical descriptions are prefixed with [TEC].
+Undecided parts are prefixed with __rsv__.
+
+###### Development Creeds
+- Aim to minimise the number of operating steps for the most common start-up and shutdown processes.
+- Aim for simple operations that require little learning.
+- Aim for software that can be operated intuitively.
+- Aim to make frequent operations quick and infrequent operations polite.
+Use of [TEC] animations, etc.
+- Carefully consider multifunctionality and degree of freedom.
+[TEC] Limit node movement by grids, etc.
+
+###### Environment.
+This program runs in a browser.
+[TEC]
+- The main behaviour uses a javascript library called p5.js
+- It is being developed to work offline.
+
+###### Operation and display
+	- Clicking, double-clicking and dragging with the mouse
+		On-screen UI
+		- UI palette
+		- Buttons
+		- Selectors (buttons that change by toggling 3 states or less)
+		- Dialogs
+	- Keyboard key input
+
+###### Functions
+This program has four main functions
+- Graph drawing function view_mode Allows you to draw a graph.
+- Graph editing edit_mode The shape of the graph can be changed.
+- Switch check switch_mode The connection of a graph can be expressed by switching nodes with the switch function on and off.
+- File access read/save Allows simple graph data to be read and written.
+
+###### Basic usage.
+ 1. startup
+	Start by opening ‘index.html’ in the ‘switch_node’ folder in a browser such as Google Chrome.
+	- If no initial data is given, open in ‘edit_mode’.
+	- If the ‘user_data’ folder contains a ‘data.dot’ with contents, it will be opened in ‘view_mode’.
+	- The default settings used internally can be changed in ‘config.txt’ in the ‘user_data’ folder.
+ Creating and editing graphs
+	The following operations can be performed in edit_mode to create and edit graphs
+	- When the plus button is on (default without file data.dot)
+		- When the add_node button is on
+			Adds a node to the graph by clicking on a location on the screen other than the node.
+			If the shift key is pressed, a node is created above, below or to the left or right of the last node created.
+			The node immediately after it has been added is not connected to any other node.
+			Nodes are automatically given a unique name and label for management purposes.
+			- source_in Switch to be used as the starting end
+			- source_out The node to be used as the end point.
+			- If the switch button is selected, the node is created as a switch (default)
+			- If the segment button is selected, the node is created as a segment.
+			About [TEC] segment
+				- The label is not used for display and cannot be changed
+		- When the add_node_on_edge button is activated
+			If an edge is selected, a segment is created at that position and the edge is split in two.
+			[TEC] Technically, one additional edge is added.
+		- When the draw_edge button is on
+			If the shift key is pressed, nodes and edges are only created above, below and to the left of the last created node.
+			- Immediately after turning it on or after applying draw_edge_reset
+				A segment is created by clicking on one of the non-nodes.
+				After the second segment has been created, an edge is created to connect them.
+				A segment is created by clicking on a node and then clicking on a non-node,
+				An additional edge is created to connect these two nodes.
+			- If the ctrl key is pressed
+				If you click on a non-node, draw_edge_reset is activated and the same state as after switching it on is created.
+			- If you press the esc key
+				draw_edge_reset is applied and the same state as immediately after turning it on is created.
+			- In other cases
+				Clicking on one of the non-nodes creates a segmentation,
+				An edge is created connecting the last segment created with the segment created.
+	- When the select button is on (default when file data.dot exists)
+		- Node edge selection
+			Multiple nodes and edges can be selected by clicking and dragging
+			Selected nodes and edges will change display
+			Clicking on a selected node or edge will deselect it
+			Hold down the shift key while dragging to deselect the selected area.
+			- If the node_only button is switched on, only nodes are selected/deselected by rectangle dragging (default)
+			- When the edge_only button is activated, only edges are selected/deselected by rectangle dragging.
+			- When the both button is activated, both nodes and edges are selected/deselected by rectangle dragging.
+		- Deselection
+			If an area of the screen other than a node or an edge is clicked, all selections are deselected.
+		- Adding edges
+			Only if two nodes are selected on the screen and none of the edges are selected
+			Press e (edge) or l (link) or press the make_edge button
+			Creates an edge between two nodes
+			The edge is automatically given a unique name and label for management purposes.
+		- Moving a node edge
+			- If the lock button is selected, no move operation is performed
+			- If the shift key is pressed, the whole object only moves up, down, left or right of the starting point.
+			- If the move_on_edge button is selected
+				（If a node is placed in a (nearly) straight line, it will move along the straight line.
+			If no nodes are selected and a node is dragged, the node and its connected edges will move
+			If no nodes or edges are selected and you drag an edge, the edge and the nodes on either side of it will move.
+			If one or more nodes are selected, dragging a single selected node will move all selections.
+			If the grid_mode button is selected, the move position of the node is automatically changed to the nearest position
+		- Changing the label of a node or edge
+			You can change the label of a node or edge by double-clicking on the label part of the node or edge
+			Only half-width letters, numbers and symbols can be used.
+			Enter the new name in the input field and press return to confirm the new label.
+			The esc key or clicking on the input field interrupts the input.
+			If the uniq button is selected, the change is invalid if a node or edge with the same name exists.
+			(a warning dialog box appears).
+		- Deleting nodes
+			With a node selected, pressing the delete key or the delete button deletes the selected node.
+			All edges connected to the selected node are also deleted.
+			All edges not connected to the deleted node remain.
+		- Deleting edges
+			Pressing the delete key with an edge selected or pressing the delete button deletes the selected edge.
+		- Deleting nodes and edges
+			With a node and edge selected, press the delete key or press the delete button to delete the selection
+			If a node is deleted, the action is the same as deleting a node only.
+	- What happens when the undo button is pressed?
+		The operation described here can be performed as a single step, allowing you to return to the previous step.
+		[TEC] The operation that is thought to be a single step is not split into multiple steps.
+	- 2. operation when the clear button is pressed
+ 3. use of switch checks
+	Simulate the operation by switching switches (nodes set to switch_mode) with switch_mode
+	- Operation when the switch is pressed
+		The switch is toggled on when it is off and off when it is on.
+		The state of the edges that can be traced from the switch is updated
+		[TEC] update algorithm
+			Edge has 3 states on off undef undef has the same appearance as off
+			One of the two states on off if both edges are switches
+			One of three states if one or both edges are segments
+			1. all edges are off and subject to update
+			2. update all connected edges according to the state of source_in
+				Exclude the updated edge from the update target
+				Register all nodes on the other side of the edge (source_out is excluded) 2.
+			2. update the state of the edges connected to the registered nodes
+				Exclude updated edges from update
+				Register all nodes on the other side of the edge (excluding source_out) 3.
+			3. repeat the second operation until all edges have been updated and are excluded from being updated
+			Decision.
+			If the edge is switch/source_in -> sorce_out
+				Previous node is on -> Edge is on
+				Previous node is off -> Edge is off
+			If edge is switch/source_in -> switch
+				Previous/previous node is on -> edge is on
+				All other edges are -> off
+			If edge is switch/source_in -> segment
+				previous node is on -> edge is undef
+				any other edge is -> off
+				After this, the state of the segment decides.
+				If only one edge (itself) is connected to segment
+					Edge is off
+				When there are two edges connected to the segment
+					Any one of the connected edges is off -> off
+					Any other edge -> on
+				When there are three or more edges connected to the segment
+					All connected edges are off except -> on
+					If only one connecting edge is off -> undef then on (if on then still on)
+					Only one connected edge is not off -> off
+	- What happens when the undo button is pressed
+		The switch state returns to the previous state. 4.
+
+ 4. file access
+	- Reading files
+		Press ctrl + o or the file_open button to open the OS file selection and load the selected file.
+		If there is a graph currently being created, a dialog box will appear asking if you want to save it.
+	- Save (download) the file
+		A dialog opens prompting you to enter a file name (default: date/time+graph).
+		(By default, a file name of date-time+graph.dot is displayed.)
+		A file is created with the file name you set and placed in the download folder.
+		(The behaviour when a file with the same name is found in the download folder depends on the browser).
+
+File used by ####
+	- data.dot Data for graphs that are automatically read and displayed at startup.
+		[TEC] Extremely simple graph representation file for graphviz.
+		 It can be converted to .png and .svg by graphviz commands such as dot and neato.
+	- config.txt Data containing the initial configuration values used internally (graph colours, drawing settings, etc.).
+		[TEC] Almost a csv file, but converted to .txt to accommodate extensions.
+	- Graph data file (xxx.dot) Data file for reading and writing.
+
+#####[TEC] Class to realise
+ - Config Holds default values, immediate values that may change in the future, etc.
+ - DrawFunc A set of methods for drawing.
+ - Node Node: Class for displaying and controlling switches and connection points.
+ - Edge Edge: Class for displaying and controlling the connections between switches and connection points.
+ 
