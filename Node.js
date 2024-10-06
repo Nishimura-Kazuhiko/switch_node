@@ -20,6 +20,9 @@ class Node
         
         this.isAbove = false;
         this.isSelected = false;
+        if(this.nodeType == 'source_in'){
+            this.isSelected = true;
+        }
     }
 
     setConfig()
@@ -52,8 +55,10 @@ class Node
             this.w = this.segmentSize;
             this.h = this.segmentSize;
             break;
-            
+        
         case 'switch':
+        case 'source_in':
+        case 'source_out':
         default:
             textSize(this.fontSize);
             this.charW = textWidth(' ')
@@ -150,12 +155,41 @@ class Node
             fic0 = this.fillColor;
             sc0  = this.strokeColor;
         }
-
+        
+        let x0;
+        let y0;
+        
         switch(this.nodeType){
         case 'segment':
             fill(sc0);
             noStroke();
             ellipse(this.cx,this.cy,this.w,this.h);
+            break;
+            
+        case 'source_in':
+            fill(fic0);
+            stroke(sc0);
+            strokeWeight(this.strokeWeight);
+            rect(this.x, this.y, this.w, this.h);
+            
+            fill(foc0);
+            noStroke();
+            x0 = this.x+this.charW;
+            y0 = this.y+this.h*this.textUnderRate;
+            text(this.name,x0,y0);
+            break;
+            
+        case 'source_out':
+            fill(fic0);
+            stroke(sc0);
+            strokeWeight(this.strokeWeight);
+            rect(this.x, this.y, this.w, this.h);
+            
+            fill(foc0);
+            noStroke();
+            x0 = this.x+this.charW;
+            y0 = this.y+this.h*this.textUnderRate;
+            text(this.name,x0,y0);
             break;
             
         case 'switch':
@@ -168,8 +202,8 @@ class Node
             //stroke(foc0);
             fill(foc0);
             noStroke();
-            let x0 = this.x+this.charW;
-            let y0 = this.y+this.h*this.textUnderRate;
+            x0 = this.x+this.charW;
+            y0 = this.y+this.h*this.textUnderRate;
             text(this.name,x0,y0);
         }
     }
