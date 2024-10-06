@@ -1,0 +1,8 @@
+        this.lameRectRateMax = 1000;
+        this.lameRectRateMin = 0.001;
+        this.lameRectDivMin  = 16;
+        
+        this.lameRectBase = 32.0;
+        this.lameRectDiv  = 32; // least case 16
+
+        this.lameRectRate = 5.2;
