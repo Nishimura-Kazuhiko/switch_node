@@ -1,0 +1,74 @@
+class Edge
+{
+    constructor(name,node0,node1,direction)
+    {
+        this.setConfig();
+        
+        this.name = name;
+        
+        this.node0 = node0;
+        this.node1 = node1;
+        
+        //direction type
+        // ->  forward
+        // <-  reverse
+        // <-> both
+        // --  undirected
+        this.direction  = direction; 
+    }
+    
+    setConfig()
+    {
+        this.fontColor         = config.edge_fontColor;
+        this.aboveStrokeColor  = config.edge_aboveStrokeColor;
+        this.selectFontColor   = config.edge_selectFontColor;
+        this.selectStrokeColor = config.edge_selectStrokeColor;
+        this.strokeColor       = config.edge_strokeColor;
+        this.strokeWeight      = config.edge_strokeWeight;
+    }
+    
+    drawEdge()
+    {
+        let drawMode = 'normal';
+        let foc0 = color(0);
+        let sc0  = color(0);
+        
+        if (this.isSelected) {
+            if (this.isAbove) {
+                drawMode = 'above'; // temporary
+            } else {
+                drawMode = 'select';
+            }
+        } else {
+            if (this.isAbove) {
+                drawMode = 'select_on';
+            } else {
+                drawMode = 'normal';
+            }
+        }
+
+        switch(drawMode) {
+        case 'select_on':
+            foc0 = this.selectFontColor;
+            sc0  = this.aboveStrokeColor;
+            break;
+        case 'select':
+            foc0 = this.selectFontColor;
+            sc0  = this.selectStrokeColor;
+            break;
+        case 'above':
+            foc0 = this.fontColor;
+            sc0  = this.aboveStrokeColor;
+            break;
+        case 'normal':
+        default:
+            foc0 = this.fontColor;
+            sc0  = this.strokeColor;
+        }
+        
+        noFill();
+        stroke(sc0);
+        strokeWeight(this.strokeWeight);
+        line(this.node0.cx,this.node0.cy,this.node1.cx,this.node1.cy);
+    }
+}
