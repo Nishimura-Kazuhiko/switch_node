@@ -25,7 +25,7 @@ function setup()
 
 function draw()
 {
-    _debug_test_graph_move00();
+    //_debug_test_graph_move00();
 }
 
 
@@ -39,14 +39,18 @@ function _debug_test_graph00()
         let nodeIndex = 0;
         let edgeIndex = 0;
         let xiMax = 4;
-        let yiMax = 4;
+        let yiMax = 7;
         
         for (let yi=0; yi<yiMax; yi++) {
             for (let xi=0; xi<xiMax; xi++) {
                 let nodeName = 'RL' + nodeIndex.toString();
                 let x = width*(xi+1)/(xiMax+2);
                 let y = height*(yi+1)/(yiMax+2);
-                _graph.addNodeByParam(nodeName,x,y);
+                if((yi%2)+(xi%2)!=1){
+                    _graph.addNodeByParam(nodeName,x,y,'switch');
+                }else{
+                    _graph.addNodeByParam(nodeName,x,y,'segment');
+                }
                 nodeIndex++;
             }
         }
@@ -55,7 +59,7 @@ function _debug_test_graph00()
             let name;
             let index0;
             
-            if(i/yiMax<yiMax-1){
+            if(floor(i/xiMax)<yiMax-1){
                 name = 'Edge' + edgeIndex.toString();
                 index0 = i+xiMax;
                 _graph.addNodeByIndices(name,i,index0,'undirected');
@@ -69,7 +73,7 @@ function _debug_test_graph00()
                 edgeIndex++;
             }
             
-            if(i/yiMax<yiMax-1 && i%xiMax<xiMax-1){
+            if(floor(i/xiMax)<yiMax-1 && i%xiMax<xiMax-1){
                 name = 'Edge' + edgeIndex.toString();
                 index0 = i+xiMax+1;
                 _graph.addNodeByIndices(name,i,index0,'undirected');

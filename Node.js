@@ -1,12 +1,19 @@
 class Node
 {
-    constructor(name, x, y)
+    constructor(name, x, y, nodeType)
     {  
         this.setConfig();
         
         this.name = name;
+        this.nodeType = nodeType;
         this.x = x;
         this.y = y;
+        
+        // node type
+        // switch      change graph edges state by toggle on/off
+        // segment     change graph edges state by connected edge status
+        // source_in   node state check start
+        // source_out  node state check end
 
         this.setNodeSize();
         this.resetCenter();
@@ -17,8 +24,12 @@ class Node
 
     setConfig()
     {
+        this.defaultType     = config.node_defaultType;
+        
         this.w = config.node_w;
         this.h = config.node_h;
+        
+        this.segmentSize     = config.node_segmentSize;
         
         this.heightRate      = config.node_heightRate;
         this.textUnderRate   = config.node_textUnderRate;
@@ -36,10 +47,21 @@ class Node
 
     setNodeSize()
     {
-        textSize(this.fontSize);
-        this.charW = textWidth(' ')
-        this.w = textWidth(this.name)+2*this.charW;
-        this.h = this.heightRate*this.fontSize;
+        switch(this.nodeType){
+        case 'segment':
+            this.w = this.segmentSize;
+            this.h = this.segmentSize;
+            break;
+            
+        case 'switch':
+        default:
+            textSize(this.fontSize);
+            this.charW = textWidth(' ')
+            this.w = textWidth(this.name)+2*this.charW;
+            this.h = this.heightRate*this.fontSize;
+        }
+        this.x -= this.w/2;
+        this.y -= this.h/2;
     }
 
     setX(x)
@@ -129,16 +151,26 @@ class Node
             sc0  = this.strokeColor;
         }
 
-        fill(fic0);
-        stroke(sc0);
-        strokeWeight(this.strokeWeight);
-        drawFunc.lameRect(this.x, this.y, this.w, this.h);
-        
-        //stroke(foc0);
-        fill(foc0);
-        noStroke();
-        let x0 = this.x+this.charW;
-        let y0 = this.y+this.h*this.textUnderRate;
-        text(this.name,x0,y0);
+        switch(this.nodeType){
+        case 'segment':
+            fill(sc0);
+            noStroke();
+            ellipse(this.cx,this.cy,this.w,this.h);
+            break;
+            
+        case 'switch':
+        default:
+            fill(fic0);
+            stroke(sc0);
+            strokeWeight(this.strokeWeight);
+            drawFunc.lameRect(this.x, this.y, this.w, this.h);
+            
+            //stroke(foc0);
+            fill(foc0);
+            noStroke();
+            let x0 = this.x+this.charW;
+            let y0 = this.y+this.h*this.textUnderRate;
+            text(this.name,x0,y0);
+        }
     }
 }

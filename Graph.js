@@ -16,9 +16,9 @@ class Graph
         this.edgeIndex = 0;
     }
     
-    addNodeByParam(name, x, y)
+    addNodeByParam(name, x, y, nodeType)
     {
-        let node0 = new Node(name, x, y);
+        let node0 = new Node(name, x, y, nodeType);
         return this.addNode(node0);
     }
     

@@ -19,8 +19,12 @@ class Config
 
     setNodeConfig()
     {
+        this.node_defaultType     = 'switch';
+        
         this.node_w = 32;
         this.node_h = 32;
+        
+        this.node_segmentSize     = 10;
 
         this.node_heightRate      = 1.75;
         this.node_textUnderRate   = 0.72;
