@@ -17,10 +17,11 @@ class Edge
         this.direction  = direction;
         
         //state type
-        // off
-        // on
-        // undef
-        this.state = 'off';
+        // new    not define state (temporary)
+        // off    visible
+        // on     visible
+        // undef  unknown on/off (temporary)
+        this.state = 'new';
         
         this.connectChecked = false;
         
