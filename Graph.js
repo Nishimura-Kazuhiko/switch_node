@@ -81,7 +81,18 @@ class Graph
         }
     }
 
-
+    // this method return a subgraph of this graph itself
+    subGraphing()
+    {
+        let subGraph = new SubGraph();
+        for(let i=0;i<this.nodeArray.length;i++){
+            subGraph.addNode(i);
+        }
+        for(let i=0;i<this.edgeArray.length;i++){
+            subGraph.addEdge(i);
+        }
+        return subGraph;
+    }
 
 
 
@@ -89,11 +100,18 @@ class Graph
     // connect check main
     connectCheck()
     {
+        let subGraph = this.subGraphing();
+        
         this.resetEdgeState('new');
         this.resetConnectChecked(false);
         this.offSwitchReject();
-        this.isoratedNodeReject();
+        this.isoratedNodeReject(); // TODO: no implementation yet
         
+        // TODO: subgraph check algorithm
+        // ...
+        
+        this.updateOnEdge('new');
+        this.updateOnEdge('undef');
     }
 
     // this method set all connectChecked value to each bool value
@@ -127,6 +145,25 @@ class Graph
                     this.edgeArray[index].isSelected = false;
                     this.edgeArray[index].connectChecked = true;
                 }
+            }
+        }
+    }
+    
+    // TODO: write the implementation
+    // this method reject nodes do not connect to edge
+    isoratedNodeReject()
+    {
+    
+    }
+    
+    // this method change all edge state that match arg state to 'on' state
+    updateOnEdge(state)
+    {
+        for (const edge0 of this.edgeArray) {
+            if(edge0.state==state){
+                edge0.state = 'on';
+                edge0.isSelected = true;
+                edge0.connectChecked = true;
             }
         }
     }
@@ -404,6 +441,24 @@ class SubGraph
     addEdge(index){
         if(!this.edgeIndices.includes(index)){
             this.edgeIndices.push(index);
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    nodeExist(index)
+    {
+        if(this.nodeIndices.includes(index)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    edgeExist(index)
+    {
+        if(this.edgeIndices.includes(index)){
             return true;
         }else{
             return false;
