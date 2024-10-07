@@ -9,6 +9,8 @@ class Graph
 
     // basic methods
     // TODO: individialy delete method
+    // TODO: edges do not know node index on both ends now
+    // TODO: nodes do not know their own index
 
     reset()
     {
@@ -79,12 +81,94 @@ class Graph
         }
     }
 
+    // this method return a subgraph of this graph itself
+    subGraphing()
+    {
+        let subGraph = new SubGraph();
+        for(let i=0;i<this.nodeArray.length;i++){
+            subGraph.addNode(i);
+        }
+        for(let i=0;i<this.edgeArray.length;i++){
+            subGraph.addEdge(i);
+        }
+        return subGraph;
+    }
 
 
 
     // connect check methods
-
+    // connect check main
     connectCheck()
+    {
+        let subGraph = this.subGraphing();
+        
+        this.resetEdgeState('new');
+        this.resetConnectChecked(false);
+        this.offSwitchReject();
+        this.isoratedNodeReject(); // TODO: no implementation yet
+        
+        // TODO: subgraph check algorithm
+        // ...
+        
+        this.updateOnEdge('new');
+        this.updateOnEdge('undef');
+    }
+
+    // this method set all connectChecked value to each bool value
+    resetConnectChecked(boolValue)
+    {
+        for (const node0 of this.nodeArray) {
+            node0.connectChecked = boolValue;
+        }
+
+        for (const edge0 of this.edgeArray) {
+            edge0.connectChecked = boolValue;
+        }
+    }
+
+    // this method set all state value to each string value
+    resetEdgeState(stateValue)
+    {
+        for (const edge0 of this.edgeArray) {
+            edge0.state = stateValue;
+        }
+    }
+
+    // this method reject off state switches & edges around them switches
+    offSwitchReject()
+    {
+        for (const node0 of this.nodeArray) {
+            if(node0.nodeType == 'switch' && !node0.isSelected){
+                node0.connectChecked = true;
+                for(const index of node0.connectEdgeIndices){
+                    this.edgeArray[index].state = 'off';
+                    this.edgeArray[index].isSelected = false;
+                    this.edgeArray[index].connectChecked = true;
+                }
+            }
+        }
+    }
+    
+    // TODO: write the implementation
+    // this method reject nodes do not connect to edge
+    isoratedNodeReject()
+    {
+    
+    }
+    
+    // this method change all edge state that match arg state to 'on' state
+    updateOnEdge(state)
+    {
+        for (const edge0 of this.edgeArray) {
+            if(edge0.state==state){
+                edge0.state = 'on';
+                edge0.isSelected = true;
+                edge0.connectChecked = true;
+            }
+        }
+    }
+
+    _old_connectCheck()
     {
         this.resetEdgeState();
         this.resetConnectChecked(false);
@@ -124,24 +208,6 @@ class Graph
             //}
         }
         //this.resetConnectChecked(true);
-    }
-
-    resetEdgeState()
-    {
-        for (const edge0 of this.edgeArray) {
-            edge0.state = 'off';
-        }
-    }
-
-    resetConnectChecked(boolValue)
-    {
-        for (const node0 of this.nodeArray) {
-            node0.connectChecked = boolValue;
-        }
-
-        for (const edge0 of this.edgeArray) {
-            edge0.connectChecked = boolValue;
-        }
     }
 
     // this methode update nodeArray[...].connectChecked value
@@ -346,5 +412,92 @@ class Graph
         for (const node0 of this.nodeArray) {
             node0.drawNode();
         }
+    }
+}
+
+// this class has only nodes & edges Indices
+class SubGraph
+{
+    constructor()
+    {
+        this.reset();
+    }
+    
+    reset()
+    {
+        this.nodeIndices = [];
+        this.edgeIndices = [];
+    }
+    
+    addNode(index){
+        if(!this.nodeIndices.includes(index)){
+            this.nodeIndices.push(index);
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    addEdge(index){
+        if(!this.edgeIndices.includes(index)){
+            this.edgeIndices.push(index);
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    nodeExist(index)
+    {
+        if(this.nodeIndices.includes(index)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    edgeExist(index)
+    {
+        if(this.edgeIndices.includes(index)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    deleteNode(index){
+        if(this.nodeIndices.includes(index)){
+            this.nodeIndices = this.nodeIndices.filter(function(item){
+                return item != index;
+            });
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    deleteEdge(index){
+        if(this.edgeIndices.includes(index)){
+            this.edgeIndices = this.edgeIndices.filter(function(item){
+                return item != index;
+            });
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    descriptionStr()
+    {
+        let outputStr = '';
+        outputStr += 'Node index:\n';
+        for(const index of this.nodeIndices){
+            outputStr += index.toString() + ' ';
+        }
+        outputStr += '\nEdge index:\n';
+        for(const index of this.edgeIndices){
+            outputStr += index.toString() + ' ';
+        }
+        return outputStr;
     }
 }

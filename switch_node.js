@@ -18,6 +18,11 @@ let _debug_state; // check list
 // _debug_connect_check00()
 let _graph;
 
+// _debug_state.push('sub_graph_test');
+// _debug_sub_graph_test00();
+
+
+
 function setup() 
 {
     config   = new Config();
@@ -30,8 +35,10 @@ function setup()
     _debug_state.push('draw_test');
     //_debug_state.push('graph_move');
     _debug_state.push('connect_check');
+    //_debug_state.push('sub_graph_test');
     _debug_test_graph00();
     _debug_connect_check00();
+    _debug_sub_graph_test00();
 }
 
 
@@ -50,8 +57,8 @@ function _debug_test_graph00()
         
         let nodeIndex = 0;
         let edgeIndex = 0;
-        let xiMax = 2;
-        let yiMax = 2;
+        let xiMax = 3;
+        let yiMax = 3;
         let maxIndex = xiMax*yiMax-1;
         
         for (let yi=0; yi<yiMax; yi++) {
@@ -129,7 +136,48 @@ function _debug_connect_check00()
 {
     if(_debug_state.includes('connect_check')){
          _graph.nodeArray[1].isSelected = true;
+         _graph.nodeArray[4].isSelected = true;
          _graph.connectCheck();
          _graph.drawGraph();
+    }
+}
+
+function _debug_sub_graph_test00()
+{
+    if(_debug_state.includes('sub_graph_test')){
+        
+        function _sub_description(bool,index)
+        {
+            if(bool){
+                console.log('node '+index.toString()+' exist')
+            }else{
+                console.log('node '+index.toString()+' is not found')
+            }
+        }
+        
+        // add test
+        let subGraph = new SubGraph();
+        for(let i=2;i<=5;i++){
+            subGraph.addNode(i);
+            subGraph.addEdge(i+10);
+        }
+        
+        console.log(subGraph.descriptionStr());
+
+        //   check
+        _sub_description(subGraph.nodeExist(3),3);
+        _sub_description(subGraph.edgeExist(14),14);
+        
+        // delete test
+        subGraph.deleteNode(3);
+        subGraph.deleteEdge(14);
+        console.log(subGraph.descriptionStr());
+        
+        //   check
+        _sub_description(subGraph.nodeExist(3),3);
+        _sub_description(subGraph.edgeExist(14),14);
+        
+        subGraph.reset();
+        console.log(subGraph.descriptionStr());
     }
 }
