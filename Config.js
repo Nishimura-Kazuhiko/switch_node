@@ -9,6 +9,8 @@ class Config
 
     setDrawFuncConfig()
     {
+        this.draw_func_arrowBoxRate    = 0.4;
+        
         this.draw_func_lameRectRateMax = 1000;
         this.draw_func_lameRectRateMin = 0.001;
         this.draw_func_lameRectDivMin  = 16;

@@ -7,6 +7,8 @@ class DrawFunc
     
     setConfig()
     {
+        this.arrowBoxRate    = config.draw_func_arrowBoxRate;
+        
         this.lameRectRateMax = config.draw_func_lameRectRateMax;
         this.lameRectRateMin = config.draw_func_lameRectRateMin;
         this.lameRectDivMin  = config.draw_func_lameRectDivMin;
@@ -23,6 +25,36 @@ class DrawFunc
         }else{
             return 1;
         }
+    }
+
+    // direction 'L' <]    'R' [> (default)
+    arrowBox(x,y,w,h,direction)
+    {
+      let outLX = x-this.arrowBoxRate*h;
+      let  inLX = outLX + h/2;
+      
+      let outRX = x+w+this.arrowBoxRate*h;
+      let  inRX = outRX - h/2;
+      
+      beginShape();
+      switch(direction){
+      case 'L':
+          vertex(x+w,y);
+          vertex(inLX,y);
+          vertex(outLX,y+h/2);
+          vertex(inLX,y+h);
+          vertex(x+w,y+h);
+          break;
+          
+      case 'R':
+      default:
+          vertex(outRX,y+h/2);
+          vertex(inRX,y);
+          vertex(x,y);
+          vertex(x,y+h);
+          vertex(inRX,y+h);
+      }
+      endShape(CLOSE);
     }
 
     lameRect(x, y, w, h)

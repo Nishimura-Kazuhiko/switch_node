@@ -17,7 +17,7 @@ class Node
         // source_in   node state check start
         // source_out  node state check end
 
-        this.setNodeSize();
+        this.setNodeSize(true);
         this.resetCenter();
         
         this.isAbove = false;
@@ -54,13 +54,35 @@ class Node
         this.strokeColor     = config.node_strokeColor;
     }
 
+    setIndex(index)
+    {
+        this.index = index;
+    }
+    
+    getIndex(index){
+        return this.index
+    }
+    
+    indexCheck(index){
+        if(index == this.index){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     connectEdge(index){
         if (!this.connectEdgeIndices.includes(index)) {
             this.connectEdgeIndices.push(index);
         }
     }
 
-    setNodeSize()
+    setConnectChecked(boolValue)
+    {
+        this.connectChecked = boolValue;
+    }
+
+    setNodeSize(refreshXY)
     {
         switch(this.nodeType){
         case 'segment':
@@ -77,9 +99,46 @@ class Node
             this.w = textWidth(this.name)+2*this.charW;
             this.h = this.heightRate*this.fontSize;
         }
-        this.x -= this.w/2;
-        this.y -= this.h/2;
+        if(refreshXY){
+            this.x -= this.w/2;
+            this.y -= this.h/2;
+        }
     }
+
+    setNodeType(nodeType){
+        this.nodeType = nodeType;
+        switch(this.nodeType){
+        case 'source_in':
+            this.isSelected = true;
+            break;
+        
+        case 'source_out':
+            this.isSelected = false;
+            break;
+        }
+        this.setNodeSize(false);
+    }
+    
+    setSelected(boolValue)
+    {
+        if(this.nodeType!='source_in' && this.nodeType!='source_out')
+        {
+            this.isSelected = boolValue;
+        }        
+    }
+    
+    toggleSelected()
+    {
+        if(this.nodeType!='source_in' && this.nodeType!='source_out')
+        {
+            if(this.isSelected){
+                this.isSelected = false;
+            }else{
+                this.isSelected = true;
+            }
+        }
+    }
+
 
     setX(x)
     {
@@ -173,7 +232,11 @@ class Node
         
         switch(this.nodeType){
         case 'segment':
-            fill(sc0);
+            if(drawMode=='normal'){
+                fill(sc0);
+            }else{
+                fill(fic0);
+            }
             noStroke();
             
             if(_debug_state.includes('connect_check')){
@@ -192,7 +255,7 @@ class Node
                 if(this.connectChecked){strokeWeight(10);}
             }
             
-            rect(this.x, this.y, this.w, this.h);
+            drawFunc.arrowBox(this.x, this.y, this.w, this.h, 'R');
             
             fill(foc0);
             noStroke();
@@ -210,7 +273,7 @@ class Node
                 if(this.connectChecked){strokeWeight(10);}
             }
             
-            rect(this.x, this.y, this.w, this.h);
+            drawFunc.arrowBox(this.x, this.y, this.w, this.h, 'R');
             
             fill(foc0);
             noStroke();
