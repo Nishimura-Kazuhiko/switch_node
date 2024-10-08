@@ -21,6 +21,12 @@ let _graph;
 // _debug_state.push('sub_graph_test');
 // _debug_sub_graph_test00();
 
+// _debug_state.push('draw_test');
+// _debug_state.push('connect_check');
+// _debug_state.push('param_change');
+// _debug_state.push('graph_draw');
+// _debug_param_change00()
+// _debug_test_graph_draw00()
 
 
 function setup() 
@@ -36,6 +42,9 @@ function setup()
     //_debug_state.push('graph_move');
     _debug_state.push('connect_check');
     //_debug_state.push('sub_graph_test');
+    //_debug_state.push('param_change');
+    //_debug_state.push('graph_draw');
+    
     _debug_test_graph00();
     _debug_connect_check00();
     _debug_sub_graph_test00();
@@ -45,8 +54,14 @@ function setup()
 function draw()
 {
     _debug_test_graph_move00();
+    _debug_test_graph_draw00();
 }
 
+
+function keyTyped()
+{
+    _debug_param_change00(key, keyCode);
+}
 
 // for debug functions
 // make node and edge, and draw them
@@ -58,12 +73,12 @@ function _debug_test_graph00()
         let nodeIndex = 0;
         let edgeIndex = 0;
         let xiMax = 3;
-        let yiMax = 3;
+        let yiMax = 5;
         let maxIndex = xiMax*yiMax-1;
         
         for (let yi=0; yi<yiMax; yi++) {
             for (let xi=0; xi<xiMax; xi++) {
-                let nodeName = 'RL' + nodeIndex.toString();
+                let nodeName = 'SW' + nodeIndex.toString();
                 let x = width*(xi+1)/(xiMax+2);
                 let y = height*(yi+1)/(yiMax+2);
                 let index = yi*xiMax + xi;
@@ -92,21 +107,21 @@ function _debug_test_graph00()
             if(floor(i/xiMax)<yiMax-1){
                 name = 'Edge' + edgeIndex.toString();
                 index0 = i+xiMax;
-                _graph.addNodeByIndices(name,i,index0,'undirected');
+                _graph.addEdgeByIndices(name,i,index0,'undirected');
                 edgeIndex++;
             }
             
             if(i%xiMax<xiMax-1){
                 name = 'Edge' + edgeIndex.toString();
                 index0 = i+1;
-                _graph.addNodeByIndices(name,i,index0,'undirected');
+                _graph.addEdgeByIndices(name,i,index0,'undirected');
                 edgeIndex++;
             }
             
             if(floor(i/xiMax)<yiMax-1 && i%xiMax<xiMax-1){
                 name = 'Edge' + edgeIndex.toString();
                 index0 = i+xiMax+1;
-                _graph.addNodeByIndices(name,i,index0,'undirected');
+                _graph.addEdgeByIndices(name,i,index0,'undirected');
                 edgeIndex++;
             }
         }
@@ -135,8 +150,37 @@ function _debug_test_graph_move00()
 function _debug_connect_check00()
 {
     if(_debug_state.includes('connect_check')){
-         _graph.nodeArray[1].isSelected = true;
-         _graph.nodeArray[4].isSelected = true;
+         _graph.nodeArray[1].setSelected(true);
+         //_graph.nodeArray[1].setSelected(false);
+         //_graph.nodeArray[1].toggleSelected();
+         
+         _graph.nodeArray[7].setSelected(true);
+         //_graph.nodeArray[7].setSelected(false);
+         //_graph.nodeArray[7].toggleSelected();
+         
+         _graph.nodeArray[13].setSelected(true);
+         //_graph.nodeArray[13].setSelected(false);
+         //_graph.nodeArray[13].toggleSelected();
+         
+         _graph.nodeArray[12].setNodeType('source_in');
+         //_graph.nodeArray[12].toggleSelected();
+         //_graph.nodeArray[12].setSelected(true);
+         //_graph.nodeArray[12].setSelected(false);
+         
+         _graph.nodeArray[8].setNodeType('source_out');
+         //_graph.nodeArray[8].setNodeType('segment');
+         //_graph.nodeArray[8].toggleSelected();
+         //_graph.nodeArray[8].setSelected(true);
+         //_graph.nodeArray[8].setSelected(false);
+         
+         
+         _graph.addNodeByParam('TEST15',80,80,'source_in');
+         _graph.addNodeByParam('TEST16',80,160,'switch');
+         _graph.nodeArray[16].setSelected(true);
+         _graph.addNodeByParam('TEST17',80,240,'segment');
+         _graph.nodeArray[17].setSelected(true);
+         _graph.addNodeByParam('TEST18',80,320,'source_out');
+         
          _graph.connectCheck();
          _graph.drawGraph();
     }
@@ -179,5 +223,25 @@ function _debug_sub_graph_test00()
         
         subGraph.reset();
         console.log(subGraph.descriptionStr());
+    }
+}
+
+function _debug_param_change00(key0,keyCode0)
+{
+    if(_debug_state.includes('param_change')){
+        if(key0=='a'){
+            drawFunc.arrowBoxRate += 0.01;
+        }else if(key0=='z'){
+            drawFunc.arrowBoxRate -= 0.01;
+        }
+        console.log(drawFunc.arrowBoxRate);
+    }
+}
+
+function _debug_test_graph_draw00()
+{
+    if(_debug_state.includes('graph_draw')){
+        background(255);
+        _graph.drawGraph();
     }
 }

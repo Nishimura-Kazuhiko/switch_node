@@ -1,5 +1,6 @@
 class Edge
 {
+    
     constructor(name,node0,node1,direction)
     {
         this.setConfig();
@@ -36,6 +37,41 @@ class Edge
         this.selectStrokeColor = config.edge_selectStrokeColor;
         this.strokeColor       = config.edge_strokeColor;
         this.strokeWeight      = config.edge_strokeWeight;
+    }
+    
+    setIndex(index)
+    {
+        this.index = index;
+    }
+    
+    getIndex(index){
+        return this.index
+    }
+    
+    indexCheck(index){
+        if(index == this.index){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    setSelected(boolValue){
+        this.isSelected = boolValue;
+    }
+    
+    setConnectChecked(boolValue)
+    {
+        this.connectChecked = boolValue;
+    }
+    
+    toggleSelected()
+    {
+            if(this.isSelected){
+                this.isSelected = false;
+            }else{
+                this.isSelected = true;
+            }
     }
     
     drawEdge()
