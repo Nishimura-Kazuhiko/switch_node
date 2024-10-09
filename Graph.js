@@ -170,7 +170,8 @@ class Graph
     resetEdgeState(subGraph, stateValue)
     {
         for(let i=0;i<subGraph.edgeSize();i++){
-            this.nodeArray[i].state = stateValue;
+            let index = subGraph.edgeIndices[i];
+            this.edgeArray[i].state = stateValue;
         }
     }
 
